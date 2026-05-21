@@ -14,6 +14,7 @@ ALLOWED_HOSTS = []
 
 # Unfold deve ser adicionado ANTES de django.contrib.admin
 INSTALLED_APPS = [
+    'unfold',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -87,3 +88,13 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# ========================================
+# CONFIGURAÇÃO DO UNFOLD - Tema e Estilos
+# ========================================
+UNFOLD = {
+    "SITE_TITLE": "Aluguel de Veículos",
+    "SITE_HEADER": "Administração",
+    "SITE_URL": "/",
+    "SHOW_VIEW_ON_SITE": True,
+}
