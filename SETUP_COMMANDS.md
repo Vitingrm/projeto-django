@@ -1,4 +1,6 @@
-# Instalar o Python
+# 📚 Comandos de Setup - Sistema de Aluguel de Veículos
+
+## 1️⃣ Instalar o Python
 
 Se necessário, instale o Python pelo link: https://www.python.org/downloads/
 
@@ -8,9 +10,11 @@ Verifique a versão instalada:
 python --version
 ```
 
+**Versão recomendada**: Python 3.10+
+
 ---
 
-# Instalar o Pip
+## 2️⃣ Instalar o Pip
 
 Se necessário, instale o pip:
 
@@ -26,7 +30,7 @@ python -m pip --version
 
 ---
 
-# Abrir o Visual Studio Code
+## 3️⃣ Abrir o Visual Studio Code
 
 Abra a pasta do projeto no VS Code:
 
@@ -36,7 +40,7 @@ code .
 
 ---
 
-# Criar o Ambiente Virtual
+## 4️⃣ Criar o Ambiente Virtual
 
 Crie um ambiente virtual para isolar as dependências do projeto:
 
@@ -44,19 +48,27 @@ Crie um ambiente virtual para isolar as dependências do projeto:
 python -m venv venv
 ```
 
-**Observação:** no exemplo acima, o segundo `venv` é o nome que escolhemos para o nosso ambiente virtual (isso pode ser alterado).
+**Observação**: o segundo `venv` é o nome do ambiente virtual (pode ser alterado).
 
 ---
 
-# Ativar o Ambiente Virtual
+## 5️⃣ Ativar o Ambiente Virtual
 
-Ative o ambiente virtual no seu computador utilizando o comando:
+Ative o ambiente virtual no seu computador:
+
+**Windows PowerShell:**
 
 ```powershell
-venv\Scripts\activate
+.\venv\Scripts\Activate.ps1
 ```
 
-Para sair do ambiente virtual:
+**Windows CMD:**
+
+```cmd
+venv\Scripts\activate.bat
+```
+
+**Para sair do ambiente virtual:**
 
 ```powershell
 deactivate
@@ -64,41 +76,198 @@ deactivate
 
 ---
 
-# Instalar as Dependências
+## 6️⃣ Instalar as Dependências
 
-Instale as dependências do projeto (Django e django-unfold):
+Instale as dependências do projeto:
 
 ```powershell
 pip install -r requirements.txt
 ```
 
-Verifique a versão instalada:
+**Dependências instaladas:**
+
+- Django 5.0.1
+- django-unfold 0.31.0
+- python-dateutil 2.8.2 (novo - para validações)
+
+Verifique as versões:
 
 ```powershell
 pip show django
-```
-
-ou
-
-```powershell
-python -m pip show django
+pip show django-unfold
+pip show python-dateutil
 ```
 
 ---
 
-# Criar o Projeto Django
+## 7️⃣ Criar Migrações (se necessário)
 
-Crie o projeto Django com o nome especificado:
+Se fez alterações nos modelos, crie uma migração:
 
 ```powershell
-django-admin startproject aluguel_veiculos .
+python manage.py makemigrations
 ```
 
 ---
 
-# Criar a Aplicação Core
+## 8️⃣ Executar Migrações
 
-Crie a aplicação core dentro do projeto:
+Aplique as migrações ao banco de dados:
+
+```powershell
+python manage.py migrate
+```
+
+---
+
+## 9️⃣ Criar Superuser (Admin)
+
+Crie um usuário administrador:
+
+```powershell
+python manage.py createsuperuser
+```
+
+Você será solicitado a informar:
+
+- **Username**: seu nome de usuário (ex: `admin`)
+- **Email**: seu email
+- **Password**: sua senha segura
+
+---
+
+## 🔟 Executar o Servidor
+
+Inicie o servidor Django:
+
+```powershell
+python manage.py runserver
+```
+
+Você verá:
+
+```
+Starting development server at http://127.0.0.1:8000/
+```
+
+---
+
+## 1️⃣1️⃣ Acessar o Admin
+
+Abra seu navegador e acesse:
+
+```
+http://127.0.0.1:8000/admin/
+```
+
+Faça login com o superuser criado.
+
+---
+
+## 🧪 Testando o Sistema
+
+### 1. Criar uma Categoria
+
+1. No Admin, vá para **Categorias**
+2. Clique em **+ Adicionar Categoria**
+3. Preencha:
+   - Nome: "Econômico"
+   - Preço Diária: 100.00
+4. Clique em **Salvar**
+
+### 2. Criar um Veículo com Features
+
+1. No Admin, vá para **Veículos**
+2. Clique em **+ Adicionar Veículo**
+3. Preencha os campos obrigatórios
+4. No campo **Features/Equipamentos**, adicione:
+   ```json
+   ["ar condicionado", "GPS", "Bluetooth"]
+   ```
+5. Clique em **Salvar**
+
+### 3. Testar o Filtro de Features
+
+1. Na listagem de **Veículos**
+2. No painel lateral, procure por **"Features/Equipamentos"**
+3. Selecione uma feature (ex: "GPS")
+4. Observe que apenas veículos com essa feature aparecem
+
+### 4. Testar Validações
+
+1. Tente criar um veículo com **Ano no futuro**
+2. Você verá uma mensagem de erro
+3. Tente criar um cliente com **menos de 18 anos**
+4. Você verá uma mensagem de erro
+
+---
+
+## 📝 Comandos Úteis
+
+### Ver todas as migrações
+
+```powershell
+python manage.py showmigrations
+```
+
+### Aplicar migração específica
+
+```powershell
+python manage.py migrate core 0001
+```
+
+### Reverter migrações
+
+```powershell
+python manage.py migrate core zero
+```
+
+### Abrir shell Django
+
+```powershell
+python manage.py shell
+```
+
+### Resetar banco de dados (desenvolvimento)
+
+```powershell
+python manage.py migrate zero
+python manage.py migrate
+```
+
+---
+
+## ⚠️ Solução de Problemas
+
+### "Module not found: django"
+
+**Solução**: Ativar ambiente virtual
+
+```powershell
+.\venv\Scripts\Activate.ps1
+```
+
+### "Port 8000 already in use"
+
+**Solução**: Usar outra porta
+
+```powershell
+python manage.py runserver 8080
+```
+
+### "No migrations applied"
+
+**Solução**: Executar migrations
+
+```powershell
+python manage.py migrate
+```
+
+### Erro ao filtrar por features
+
+**Solução**: Certifique-se de que há veículos com features cadastradas
+
+---
 
 ```powershell
 python manage.py startapp core

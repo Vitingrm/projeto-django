@@ -1,6 +1,6 @@
 # Sistema de Aluguel de Veículos - Django
 
-Sistema de gerenciamento de aluguel de veículos com interface administrativa completa.
+Sistema de gerenciamento de aluguel de veículos com interface administrativa.
 
 ---
 
@@ -35,6 +35,7 @@ python manage.py createsuperuser
 ```
 
 Preencha com seus dados:
+
 - Username: `admin`
 - Email: seu email
 - Password: sua senha
@@ -52,7 +53,7 @@ Acesse: **http://127.0.0.1:8000/admin/**
 ## 📁 Estrutura do Projeto
 
 ```
-aluguel_veiculos/
+projeto-django/
 ├── aluguel_veiculos/          # Configuração principal
 │   ├── settings.py            # Configurações Django
 │   ├── urls.py                # URLs principais
@@ -60,10 +61,8 @@ aluguel_veiculos/
 │   └── asgi.py                # ASGI config
 │
 ├── core/                       # App principal
-│   ├── models.py              # Modelos de dados
-│   ├── admin.py               # Configuração admin
-│   ├── views.py               # Views (futura)
-│   ├── urls.py                # URLs (futura)
+│   ├── models.py              # Modelos com validações clean()
+│   ├── admin.py               # Admin com filtros customizados
 │   ├── migrations/            # Migrações do banco
 │   └── apps.py                # Configuração app
 │
@@ -82,23 +81,141 @@ aluguel_veiculos/
 
 ---
 
+## ✨ Recursos Implementados
+
+### 🔐 Validações com `clean()`
+
+Todos os modelos possuem validações robustas de regras de negócio:
+
+- **Categoria**: Preço da diária > 0
+- **Veiculo**: Quilometragem, ano válido, status válido, features como lista
+- **Cliente**: CPF formato válido, CNH apenas números, cliente ≥ 18 anos
+- **Funcionario**: CPF formato válido, cargo obrigatório
+- **Aluguel**: Datas válidas, quilometragem válida, regras de encerramento
+- **Pagamento**: Valor > 0, datas válidas, regras de status
+
+### 📋 List Field (JSONField)
+
+O modelo **Veiculo** possui um campo `features` para armazenar uma lista de equipamentos:
+
+```python
+features = models.JSONField(default=list, blank=True)
+```
+
+**Exemplos de features:**
+
+- "ar condicionado"
+- "GPS"
+- "Bluetooth"
+- "teto solar"
+- "vidro elétrico"
+
+### 🔍 Filtro Customizado de Features
+
+No admin de Veículos, existe um filtro dinâmico que:
+
+- Extrai automaticamente todas as features cadastradas
+- Permite filtrar veículos por feature selecionada
+- Atualiza dinamicamente quando novas features são adicionadas
+- Funciona em qualquer banco de dados (incluindo SQLite)
+
+---
+
 ## 📊 Modelos de Dados
 
 ### 🏷️ Categoria
-- Nome da categoria (ex: Economy, SUV, Luxury)
-- Descrição
-- Preço diário em reais
 
-### 🚗 Veículo
-- Categoria (relação com Categoria)
-- Placa (única)
-- Marca
-- Modelo
-- Ano
-- Quilometragem
-- Status: disponível, alugado, manutenção
+- **nome**: CharField 100, único
+- **descricao**: TextField, opcional
+- **preco_diaria**: DecimalField 8,2
+
+### 🚗 Veiculo
+
+- **categoria**: ForeignKey → Categoria
+- **placa**: CharField 20, único
+- **marca**, **modelo**: CharField 50
+- **ano**: IntegerField
+- **quilometragem**: IntegerField
+- **status**: Choices (disponível, alugado, manutenção)
+- **features**: JSONField - Lista de equipamentos ⭐ NOVO
 
 ### 👤 Cliente
+
+- **nome**: CharField 150
+- **cpf**: CharField 14, único (formato: XXX.XXX.XXX-XX)
+- **cnh**: CharField 20, único
+- **email**: EmailField, único
+- **telefone**: CharField 20
+- **data_nascimento**: DateField (validado ≥ 18 anos)
+
+### 👨‍💼 Funcionario
+
+- **nome**: CharField 150
+- **cpf**: CharField 14, único (formato: XXX.XXX.XXX-XX)
+- **cargo**: CharField 100, obrigatório
+- **email**: EmailField, único
+
+### 🔖 Aluguel
+
+- **cliente**: ForeignKey → Cliente (PROTECT)
+- **veiculo**: ForeignKey → Veiculo (PROTECT)
+- **funcionario**: ForeignKey → Funcionario (PROTECT)
+- **data_retirada**: DateTimeField
+- **data_devolucao_prevista**: DateTimeField
+- **data_devolucao_real**: DateTimeField, opcional
+- **km_inicial**: IntegerField
+- **km_final**: IntegerField, opcional
+- **status**: Choices (aberto, encerrado, cancelado)
+
+### 💳 Pagamento
+
+- **aluguel**: OneToOneField → Aluguel (CASCADE)
+- **valor_total**: DecimalField 10,2
+- **metodo**: Choices (crédito, débito, pix, dinheiro)
+- **status**: Choices (pendente, pago, cancelado)
+- **data_pagamento**: DateTimeField, opcional
+
+---
+
+## 🎯 Recursos do Admin
+
+### VeiculoAdmin - Destaque
+
+- ✅ Filtro por features (dinâmico)
+- ✅ Campo features com editor JSON
+- ✅ Validações ao salvar
+
+### Todos os Admins
+
+- ✅ Método `save_model()` com `full_clean()` para validações
+- ✅ `list_display` otimizado
+- ✅ `search_fields` implementados
+- ✅ `list_filter` customizados
+- ✅ `fieldsets` organizados
+
+---
+
+## 🔧 Dependências
+
+```
+Django==5.0.1
+django-unfold==0.31.0
+python-dateutil==2.8.2
+```
+
+---
+
+## 📝 Notas Importantes
+
+1. **Validações**: Funcionam automaticamente no Admin Django
+2. **Features**: Use como lista JSON no campo features
+3. **Filtro de Features**: Atualiza automaticamente conforme novos veículos são adicionados
+4. **SQLite**: Todas as funcionalidades foram otimizadas para SQLite
+
+---
+
+### 👤 Cliente
+
 - Nome
 - CPF (único)
 - CNH (única)
@@ -107,12 +224,14 @@ aluguel_veiculos/
 - Data de nascimento
 
 ### 👨‍💼 Funcionário
+
 - Nome
 - CPF (único)
 - Cargo
 - Email (único)
 
 ### 📋 Aluguel
+
 - Cliente (relação)
 - Veículo (relação)
 - Funcionário responsável (relação)
@@ -124,6 +243,7 @@ aluguel_veiculos/
 - Status: aberto, encerrado, cancelado
 
 ### 💳 Pagamento
+
 - Aluguel (relação 1:1)
 - Valor total
 - Método: crédito, débito, PIX, dinheiro
@@ -135,14 +255,17 @@ aluguel_veiculos/
 ## 🛠️ Configurações Importantes
 
 ### Idioma e Timezone
+
 - **Idioma**: Português (Brasil)
 - **Timezone**: America/Sao_Paulo
 
 ### Banco de Dados
+
 - **Tipo**: SQLite (desenvolvimento)
 - **Arquivo**: `db.sqlite3`
 
 ### Admin Django
+
 - **URL**: http://127.0.0.1:8000/admin/
 - **Interface**: Padrão Django com customizações
 
@@ -175,19 +298,3 @@ python manage.py collectstatic --noinput
 - **django-unfold 0.31.0**: Admin customizado (opcional)
 
 ---
-
-## ✅ Checkpoint 1 - Entregáveis
-
-- ✅ Modelos de dados completos (6 entidades)
-- ✅ Banco de dados criado e migrado
-- ✅ Interface admin funcional
-- ✅ Admin customizado com fieldsets
-- ✅ Busca e filtros configurados
-- ✅ Relacionamentos funcionando
-- ✅ Documento de setup
-
----
-
-## 📧 Suporte
-
-Para dúvidas sobre o projeto, consulte a documentação do Django em https://docs.djangoproject.com/

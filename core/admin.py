@@ -1,5 +1,40 @@
 from django.contrib import admin
+from django.db.models import Q
 from .models import Categoria, Veiculo, Cliente, Funcionario, Aluguel, Pagamento
+
+
+# Filtro customizado para Features
+class FeatureListFilter(admin.SimpleListFilter):
+    """Filtro customizado para buscar veículos por features."""
+    title = 'Features/Equipamentos'
+    parameter_name = 'feature'
+
+    def lookups(self, request, model_admin):
+        """
+        Extrai todas as features únicas cadastradas em veículos.
+        Retorna apenas as features que estão em pelo menos um veículo.
+        """
+        # Coletar todas as features de todos os veículos
+        all_features = set()
+        
+        for veiculo in Veiculo.objects.all():
+            if veiculo.features and isinstance(veiculo.features, list):
+                all_features.update(veiculo.features)
+        
+        # Retornar features em ordem alfabética
+        return [(feature, feature) for feature in sorted(all_features)]
+
+    def queryset(self, request, queryset):
+        """Filtra o queryset por feature selecionada."""
+        if self.value():
+            # Filtra em Python porque SQLite não suporta contains em JSONField
+            feature = self.value()
+            ids = [
+                v.id for v in queryset 
+                if v.features and isinstance(v.features, list) and feature in v.features
+            ]
+            return queryset.filter(id__in=ids)
+        return queryset
 
 
 # Inline para Pagamento dentro de Aluguel
@@ -27,13 +62,18 @@ class CategoriaAdmin(admin.ModelAdmin):
         }),
     )
 
+    def save_model(self, request, obj, form, change):
+        """Chama clean() antes de salvar."""
+        obj.full_clean()
+        super().save_model(request, obj, form, change)
+
 
 @admin.register(Veiculo)
 class VeiculoAdmin(admin.ModelAdmin):
     """Admin para Veículo."""
     list_display = ['placa', 'marca', 'modelo', 'ano', 'categoria', 'status']
     search_fields = ['placa', 'marca', 'modelo']
-    list_filter = ['status', 'categoria', 'ano']
+    list_filter = ['status', 'categoria', 'ano', FeatureListFilter]
     ordering = ['placa']
     
     fieldsets = (
@@ -43,7 +83,16 @@ class VeiculoAdmin(admin.ModelAdmin):
         ('Condição', {
             'fields': ('quilometragem', 'status')
         }),
+        ('Features/Equipamentos', {
+            'fields': ('features',),
+            'description': 'Adicione uma lista de features do veículo (ex: ["ar condicionado", "direção hidráulica"])'
+        }),
     )
+
+    def save_model(self, request, obj, form, change):
+        """Chama clean() antes de salvar."""
+        obj.full_clean()
+        super().save_model(request, obj, form, change)
 
 
 @admin.register(Cliente)
@@ -66,6 +115,11 @@ class ClienteAdmin(admin.ModelAdmin):
         }),
     )
 
+    def save_model(self, request, obj, form, change):
+        """Chama clean() antes de salvar."""
+        obj.full_clean()
+        super().save_model(request, obj, form, change)
+
 
 @admin.register(Funcionario)
 class FuncionarioAdmin(admin.ModelAdmin):
@@ -83,6 +137,11 @@ class FuncionarioAdmin(admin.ModelAdmin):
             'fields': ('cargo', 'email')
         }),
     )
+
+    def save_model(self, request, obj, form, change):
+        """Chama clean() antes de salvar."""
+        obj.full_clean()
+        super().save_model(request, obj, form, change)
 
 
 @admin.register(Aluguel)
@@ -107,6 +166,11 @@ class AluguelAdmin(admin.ModelAdmin):
         }),
     )
 
+    def save_model(self, request, obj, form, change):
+        """Chama clean() antes de salvar."""
+        obj.full_clean()
+        super().save_model(request, obj, form, change)
+
 
 @admin.register(Pagamento)
 class PagamentoAdmin(admin.ModelAdmin):
@@ -125,6 +189,11 @@ class PagamentoAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
+
+    def save_model(self, request, obj, form, change):
+        """Chama clean() antes de salvar."""
+        obj.full_clean()
+        super().save_model(request, obj, form, change)
 
 
 # Customizar headers do site
