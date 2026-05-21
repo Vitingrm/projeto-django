@@ -1,0 +1,258 @@
+/* Customização global do Admin */
+
+:root {
+    --error-color: #dc2626;
+    --error-bg: #fee2e2;
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --primary: #1f2937;
+    --border: #e5e7eb;
+    --focus: #4b5563;
+}
+
+* {
+    font-family: var(--font-family) !important;
+}
+
+body {
+    font-family: var(--font-family) !important;
+    background-color: #f9fafb;
+}
+
+/* ============ INPUTS GLOBAIS ============ */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="search"],
+textarea,
+select {
+    font-family: var(--font-family) !important;
+    font-size: 14px !important;
+    padding: 12px 14px !important;
+    border: 2px solid var(--border) !important;
+    border-radius: 8px !important;
+    line-height: 1.5 !important;
+    background-color: #ffffff !important;
+    color: var(--primary) !important;
+    transition: all 0.3s ease !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+input[type="text"]:hover,
+input[type="email"]:hover,
+input[type="password"]:hover,
+input[type="number"]:hover,
+textarea:hover,
+select:hover {
+    border-color: #d1d5db !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--focus) !important;
+    box-shadow: 0 0 0 4px rgba(75, 85, 99, 0.1), 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    outline: none !important;
+    background-color: #ffffff !important;
+}
+
+input[type="text"]::placeholder,
+input[type="email"]::placeholder,
+input[type="password"]::placeholder {
+    color: #9ca3af !important;
+    opacity: 0.7 !important;
+}
+
+/* ============ LABELS ============ */
+label {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: var(--primary) !important;
+    margin-bottom: 8px !important;
+    display: block !important;
+    letter-spacing: 0.3px !important;
+}
+
+label.required::after {
+    content: " *" !important;
+    color: var(--error-color) !important;
+    font-weight: bold !important;
+    margin-left: 2px !important;
+}
+
+/* ============ FIELD CONTAINERS ============ */
+.form-row,
+.fieldBox,
+.field-box {
+    margin-bottom: 20px !important;
+    padding: 16px !important;
+    background-color: #ffffff !important;
+    border-radius: 8px !important;
+    border: 1px solid var(--border) !important;
+    transition: all 0.2s ease !important;
+}
+
+.form-row:hover,
+.fieldBox:hover,
+.field-box:hover {
+    border-color: #d1d5db !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* ============ HELP TEXT E DESCRIÇÕES ============ */
+.help-text {
+    font-size: 13px !important;
+    color: #6b7280 !important;
+    margin-top: 6px !important;
+    line-height: 1.5 !important;
+    font-style: italic !important;
+    display: block !important;
+}
+
+.description {
+    background-color: var(--error-bg) !important;
+    color: var(--error-color) !important;
+    padding: 12px 16px !important;
+    border-radius: 8px !important;
+    border-left: 4px solid var(--error-color) !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    margin-bottom: 20px !important;
+}
+
+/* ============ ERROS ============ */
+.errorlist {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 8px 0 12px 0 !important;
+}
+
+.errorlist li {
+    background-color: var(--error-bg) !important;
+    color: var(--error-color) !important;
+    padding: 12px 16px !important;
+    border-radius: 8px !important;
+    border-left: 4px solid var(--error-color) !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    margin-bottom: 8px !important;
+}
+
+/* Campos com erro */
+.errors input,
+.errors textarea,
+.errors select {
+    border-color: var(--error-color) !important;
+    background-color: rgba(220, 38, 38, 0.02) !important;
+}
+
+.errors input:focus,
+.errors textarea:focus,
+.errors select:focus {
+    border-color: var(--error-color) !important;
+    box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1) !important;
+}
+
+/* ============ SELECTS MÚLTIPLOS ============ */
+select[multiple] {
+    min-height: 250px !important;
+    padding: 12px !important;
+}
+
+select[multiple] option {
+    padding: 8px !important;
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+}
+
+/* ============ SELETORES HORIZONTAIS ============ */
+.selector {
+    display: flex !important;
+    gap: 12px !important;
+    align-items: stretch !important;
+}
+
+.selector select {
+    flex: 1 !important;
+    min-height: 300px !important;
+    font-size: 13px !important;
+}
+
+.selector-buttons {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    gap: 6px !important;
+}
+
+.selector button {
+    padding: 8px 12px !important;
+    font-size: 13px !important;
+}
+
+/* ============ TÍTULOS E HEADINGS ============ */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-family) !important;
+    letter-spacing: 0.5px !important;
+    color: var(--primary) !important;
+}
+
+.module h2 {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    margin-bottom: 16px !important;
+    padding-bottom: 12px !important;
+    border-bottom: 2px solid var(--border) !important;
+}
+
+/* ============ BOTÕES ============ */
+button,
+input[type="submit"],
+input[type="button"],
+input[type="reset"] {
+    font-family: var(--font-family) !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    padding: 12px 20px !important;
+    letter-spacing: 0.3px !important;
+    border-radius: 8px !important;
+    transition: all 0.2s ease !important;
+    cursor: pointer !important;
+}
+
+input[type="submit"] {
+    background-color: var(--focus) !important;
+    color: white !important;
+    border: none !important;
+}
+
+input[type="submit"]:hover {
+    background-color: #374151 !important;
+    box-shadow: 0 4px 12px rgba(31, 41, 55, 0.3) !important;
+}
+
+/* ============ FIELDSET ============ */
+fieldset {
+    padding: 16px !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 8px !important;
+    margin-bottom: 20px !important;
+}
+
+fieldset.collapse {
+    background-color: #f3f4f6 !important;
+}
+
+legend {
+    font-weight: 700 !important;
+    font-size: 15px !important;
+    color: var(--primary) !important;
+    padding: 0 8px !important;
+}
+
+
