@@ -4,6 +4,8 @@ Sistema de gerenciamento de aluguel de veículos com interface administrativa.
 
 ---
 
+Integrantes do Grupo: Victor Gabriel e Bruno Souza
+
 ## 🚀 Como Rodar o Projeto
 
 ### 🪟 Windows (PowerShell)
