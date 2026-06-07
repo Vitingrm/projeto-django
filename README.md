@@ -4,9 +4,13 @@ Sistema de gerenciamento de aluguel de veículos com interface administrativa.
 
 ---
 
+Integrantes do Grupo: Victor Gabriel e Bruno Souza
+
 ## 🚀 Como Rodar o Projeto
 
-### 1️⃣ Criar e Ativar o Ambiente Virtual
+### 🪟 Windows (PowerShell)
+
+#### 1️⃣ Criar e Ativar o Ambiente Virtual
 
 ```powershell
 # Criar ambiente virtual
@@ -16,19 +20,19 @@ python -m venv venv
 .\venv\Scripts\Activate.ps1
 ```
 
-### 2️⃣ Instalar Dependências
+#### 2️⃣ Instalar Dependências
 
 ```powershell
 pip install -r requirements.txt
 ```
 
-### 3️⃣ Executar Migrations
+#### 3️⃣ Executar Migrations
 
 ```powershell
 python manage.py migrate
 ```
 
-### 4️⃣ Criar Superuser (Admin)
+#### 4️⃣ Criar Superuser (Admin)
 
 ```powershell
 python manage.py createsuperuser
@@ -40,9 +44,55 @@ Preencha com seus dados:
 - Email: seu email
 - Password: sua senha
 
-### 5️⃣ Rodar o Servidor
+#### 5️⃣ Rodar o Servidor
 
 ```powershell
+python manage.py runserver
+```
+
+Acesse: **http://127.0.0.1:8000/admin/**
+
+---
+
+### 🐧 Linux (Bash/Zsh)
+
+#### 1️⃣ Criar e Ativar o Ambiente Virtual
+
+```bash
+# Criar ambiente virtual
+python3 -m venv venv
+
+# Ativar (Linux/macOS)
+source venv/bin/activate
+```
+
+#### 2️⃣ Instalar Dependências
+
+```bash
+pip install -r requirements.txt
+```
+
+#### 3️⃣ Executar Migrations
+
+```bash
+python manage.py migrate
+```
+
+#### 4️⃣ Criar Superuser (Admin)
+
+```bash
+python manage.py createsuperuser
+```
+
+Preencha com seus dados:
+
+- Username: `admin`
+- Email: seu email
+- Password: sua senha
+
+#### 5️⃣ Rodar o Servidor
+
+```bash
 python manage.py runserver
 ```
 
@@ -195,83 +245,19 @@ No admin de Veículos, existe um filtro dinâmico que:
 
 ---
 
-## 🔧 Dependências
+##  Notas Importantes
 
-```
-Django==5.0.1
-django-unfold==0.31.0
-python-dateutil==2.8.2
-```
-
----
-
-## 📝 Notas Importantes
-
-1. **Validações**: Funcionam automaticamente no Admin Django
-2. **Features**: Use como lista JSON no campo features
+1. **Validações**: Funcionam automaticamente no Admin Django através do método `clean()` em todos os modelos
+2. **Features**: Use como lista JSON no campo features do Veículo
 3. **Filtro de Features**: Atualiza automaticamente conforme novos veículos são adicionados
 4. **SQLite**: Todas as funcionalidades foram otimizadas para SQLite
-
----
-
-### 👤 Cliente
-
-- Nome
-- CPF (único)
-- CNH (única)
-- Email (único)
-- Telefone
-- Data de nascimento
-
-### 👨‍💼 Funcionário
-
-- Nome
-- CPF (único)
-- Cargo
-- Email (único)
-
-### 📋 Aluguel
-
-- Cliente (relação)
-- Veículo (relação)
-- Funcionário responsável (relação)
-- Data de início
-- Data de fim prevista
-- Data de fim real
-- Quilometragem inicial
-- Quilometragem final
-- Status: aberto, encerrado, cancelado
-
-### 💳 Pagamento
-
-- Aluguel (relação 1:1)
-- Valor total
-- Método: crédito, débito, PIX, dinheiro
-- Status: pendente, pago, cancelado
-- Data do pagamento
-
----
-
-## 🛠️ Configurações Importantes
-
-### Idioma e Timezone
-
-- **Idioma**: Português (Brasil)
-- **Timezone**: America/Sao_Paulo
-
-### Banco de Dados
-
-- **Tipo**: SQLite (desenvolvimento)
-- **Arquivo**: `db.sqlite3`
-
-### Admin Django
-
-- **URL**: http://127.0.0.1:8000/admin/
-- **Interface**: Padrão Django com customizações
+5. **Admin Customizado**: Interface com django-unfold para melhor UX
 
 ---
 
 ## 📝 Comandos Úteis
+
+### Windows PowerShell
 
 ```powershell
 # Criar migrations para mudanças nos modelos
@@ -290,11 +276,51 @@ python manage.py migrate core zero
 python manage.py collectstatic --noinput
 ```
 
+### Linux/macOS
+
+```bash
+# Criar migrations para mudanças nos modelos
+python manage.py makemigrations
+
+# Ver status das migrations
+python manage.py showmigrations
+
+# Acessar o shell Django
+python manage.py shell
+
+# Resetar migrations (cuidado!)
+python manage.py migrate core zero
+
+# Coletar arquivos estáticos
+python manage.py collectstatic --noinput
+```
+
+---
+
+## 🛠️ Configurações Importantes
+
+### Idioma e Timezone
+
+- **Idioma**: Português (Brasil)
+- **Timezone**: America/Sao_Paulo
+
+### Banco de Dados
+
+- **Tipo**: SQLite (desenvolvimento)
+- **Arquivo**: `db.sqlite3`
+
+### Admin Django
+
+- **URL**: http://127.0.0.1:8000/admin/
+- **Usuário Padrão**: admin
+- **Interface**: Customizada com django-unfold
+
 ---
 
 ## 📦 Dependências
 
 - **Django 5.0.1**: Framework web
-- **django-unfold 0.31.0**: Admin customizado (opcional)
+- **django-unfold 0.31.0**: Admin customizado e moderno
+- **python-dateutil 2.8.2**: Utilitários para manipulação de datas
 
 ---
