@@ -1,0 +1,2 @@
+{% extends "base.html" %}
+{% block content %}<div class="mt-4"><h1>{{ funcionario.nome }}</h1><p><strong>Cargo:</strong> {{ funcionario.cargo }}</p><a href="{% url 'funcionario-update' funcionario.pk %}" class="btn btn-primary">✏️</a></div>{% endblock %}

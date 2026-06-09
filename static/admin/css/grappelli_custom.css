@@ -1,0 +1,289 @@
+/* ============================================
+   CUSTOMIZAÇÃO DO GRAPPELLI
+   Melhorando visualização de campos e botões
+   ============================================ */
+
+/* ========== CAMPOS DE INPUT ==========*/
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+input[type="datetime-local"],
+input[type="time"],
+textarea,
+select {
+    /* Melhorando o contraste */
+    background-color: #f8f9fa !important;
+    color: #1f2937 !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 4px !important;
+    padding: 8px 10px !important;
+    font-size: 13px !important;
+}
+
+/* Quando o input tem foco */
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="datetime-local"]:focus,
+input[type="time"]:focus,
+textarea:focus,
+select:focus {
+    background-color: #ffffff !important;
+    color: #1f2937 !important;
+    border: 1px solid #2563eb !important;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1) !important;
+    outline: none !important;
+}
+
+/* ========== TEXTAREA ==========*/
+textarea {
+    resize: vertical;
+    min-height: 100px !important;
+}
+
+/* ========== SELECT ==========*/
+select {
+    cursor: pointer;
+}
+
+/* ========== LABELS ==========*/
+label {
+    color: #374151 !important;
+    font-weight: 500 !important;
+    font-size: 12px !important;
+}
+
+/* ========== FIELDSETS ==========*/
+fieldset {
+    border: 1px solid #e5e7eb !important;
+    border-radius: 4px !important;
+    padding: 12px !important;
+    margin-bottom: 16px !important;
+    background-color: #fafbfc !important;
+}
+
+fieldset > h2 {
+    color: #1f2937 !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    margin-bottom: 10px !important;
+}
+
+/* ========== BOTÕES ==========*/
+button,
+input[type="button"],
+input[type="submit"],
+.button,
+a.button {
+    padding: 8px 14px !important;
+    border-radius: 4px !important;
+    font-weight: 500 !important;
+    font-size: 12px !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+}
+
+/* Botão primário (Salvar) */
+.submit-row input[type="submit"],
+button.default,
+.button.default {
+    background-color: #2563eb !important;
+    color: #ffffff !important;
+}
+
+.submit-row input[type="submit"]:hover,
+button.default:hover,
+.button.default:hover {
+    background-color: #1d4ed8 !important;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2) !important;
+}
+
+/* Botão de exclusão (Delete) */
+.submit-row input[type="button"],
+.deletelink {
+    background-color: #ef4444 !important;
+    color: #ffffff !important;
+}
+
+.submit-row input[type="button"]:hover,
+.deletelink:hover {
+    background-color: #dc2626 !important;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2) !important;
+}
+
+/* ========== RELATED FIELD BUTTONS ==========*/
+.related-widget-wrapper {
+    display: flex !important;
+    gap: 6px !important;
+    align-items: center !important;
+}
+
+.related-widget-wrapper select {
+    flex: 1;
+}
+
+.related-widget-wrapper .button,
+.related-lookup {
+    background-color: #2563eb !important;
+    color: #ffffff !important;
+    padding: 6px 10px !important;
+    border-radius: 3px !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    font-size: 11px !important;
+}
+
+.related-widget-wrapper .button:hover,
+.related-lookup:hover {
+    background-color: #1d4ed8 !important;
+}
+
+/* ========== ERRORLIST ==========*/
+.errorlist {
+    background-color: #fee2e2 !important;
+    border: 1px solid #fecaca !important;
+    color: #991b1b !important;
+    border-radius: 4px !important;
+    padding: 8px !important;
+    margin-bottom: 10px !important;
+    font-size: 12px !important;
+}
+
+.errorlist li {
+    margin-bottom: 2px !important;
+}
+
+/* ========== GRAPPELLI SPECIFIC ==========*/
+#changelist-filter {
+    background-color: #f9fafb !important;
+    border-left: 1px solid #e5e7eb !important;
+}
+
+#changelist-filter h2 {
+    color: #1f2937 !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    padding: 10px 12px !important;
+}
+
+#changelist-filter ul {
+    list-style: none !important;
+}
+
+#changelist-filter li {
+    border-bottom: 1px solid #e5e7eb !important;
+    padding: 0 !important;
+}
+
+#changelist-filter a {
+    display: block !important;
+    padding: 8px 12px !important;
+    color: #2563eb !important;
+    text-decoration: none !important;
+    font-size: 12px !important;
+}
+
+#changelist-filter a:hover,
+#changelist-filter li.selected a {
+    background-color: #e0f2fe !important;
+    color: #1d4ed8 !important;
+}
+
+/* ========== SUBMIT ROW ==========*/
+.submit-row {
+    display: flex !important;
+    gap: 6px !important;
+    flex-wrap: wrap !important;
+    padding-top: 10px !important;
+    border-top: 1px solid #e5e7eb !important;
+    margin-top: 12px !important;
+}
+
+/* ========== HELP TEXT ==========*/
+.help-text,
+p.help {
+    color: #6b7280 !important;
+    font-size: 11px !important;
+    margin-top: 2px !important;
+    display: block !important;
+}
+
+/* ========== FORM-ROW ==========*/
+.form-row {
+    margin-bottom: 12px !important;
+}
+
+.form-row p {
+    margin-top: 2px !important;
+    font-size: 11px !important;
+    color: #6b7280 !important;
+}
+
+/* ========== INLINE ADMIN ==========*/
+.inline-group {
+    border: 1px solid #e5e7eb !important;
+    border-radius: 4px !important;
+    padding: 10px !important;
+    margin-bottom: 12px !important;
+    background-color: #fafbfc !important;
+}
+
+.inline-group h2 {
+    color: #1f2937 !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    margin-bottom: 10px !important;
+}
+
+/* ========== DARK MODE SUPPORT ==========*/
+@media (prefers-color-scheme: dark) {
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    input[type="date"],
+    input[type="datetime-local"],
+    input[type="time"],
+    textarea,
+    select {
+        background-color: #374151 !important;
+        color: #f3f4f6 !important;
+        border-color: #4b5563 !important;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="password"]:focus,
+    input[type="number"]:focus,
+    input[type="date"]:focus,
+    input[type="datetime-local"]:focus,
+    input[type="time"]:focus,
+    textarea:focus,
+    select:focus {
+        background-color: #1f2937 !important;
+        color: #f3f4f6 !important;
+        border-color: #3b82f6 !important;
+    }
+
+    label {
+        color: #e5e7eb !important;
+    }
+
+    fieldset {
+        background-color: #1f2937 !important;
+        border-color: #4b5563 !important;
+    }
+
+    fieldset > h2 {
+        color: #f3f4f6 !important;
+    }
+}

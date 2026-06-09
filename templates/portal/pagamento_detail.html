@@ -1,0 +1,2 @@
+{% extends "base.html" %}
+{% block content %}<div class="mt-4"><h1>Pagamento #{{ pagamento.pk }}</h1><p><strong>Valor:</strong> R$ {{ pagamento.valor_pago }}</p><p><strong>Status:</strong> {{ pagamento.status }}</p><a href="{% url 'pagamento-update' pagamento.pk %}" class="btn btn-primary">✏️</a></div>{% endblock %}

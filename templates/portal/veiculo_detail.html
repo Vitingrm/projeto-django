@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ veiculo.placa }}{% endblock %}
+{% block content %}
+<div class="mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h1>{{ veiculo.placa }}</h1>
+            <p><strong>Modelo:</strong> {{ veiculo.modelo }}</p>
+            <p><strong>Marca:</strong> {{ veiculo.marca }}</p>
+            <p><strong>Categoria:</strong> {{ veiculo.categoria.nome }}</p>
+            <a href="{% url 'veiculo-update' veiculo.pk %}" class="btn btn-primary">✏️ Editar</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

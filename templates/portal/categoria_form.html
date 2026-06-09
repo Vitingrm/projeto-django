@@ -1,0 +1,9 @@
+{% extends "portal/base_form.html" %}
+
+{% block title %}{% if form.instance.pk %}Editar{% else %}Nova{% endif %} Categoria{% endblock %}
+
+{% block content %}
+{% with title_form=title_form cancel_url='categoria-list' %}
+    {{ block.super }}
+{% endwith %}
+{% endblock %}

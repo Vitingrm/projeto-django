@@ -1,0 +1,69 @@
+{% extends "base.html" %} {% block title %}Home - Aluguel de Veículos{% endblock %} {% block content %}
+<div class="mt-5 mb-5">
+  <!-- Hero Section -->
+  <div class="row align-items-center mb-5">
+    <div class="col-md-6">
+      <h1 class="display-4 font-weight-bold mb-4">🚗 Aluguel de Veículos</h1>
+      <p class="lead text-muted mb-4">Sistema completo e seguro para aluguel de veículos.</p>
+      {% if not user.is_authenticated %}
+      <a href="/login/" class="btn btn-primary btn-lg"> Fazer Login </a>
+      {% else %}
+      <a href="/dashboard/" class="btn btn-primary btn-lg"> Ir para Dashboard </a>
+      {% endif %}
+    </div>
+    <div class="col-md-6">
+      <div class="alert alert-light text-center p-5">
+        <h2>🏢</h2>
+        <p class="text-muted">Seu portal de aluguel de veículos</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recursos -->
+  <hr class="my-5" />
+
+  <h2 class="mb-4">✨ Recursos</h2>
+  <div class="row">
+    <div class="col-md-4 mb-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">🔐 Segurança</h5>
+          <p class="card-text">Acesso protegido com login e senha. Seus dados estão seguros e criptografados.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">📱 Responsivo</h5>
+          <p class="card-text">Interface amigável e responsiva. Acesse de qualquer dispositivo - desktop, tablet ou celular.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">⚡ Rápido</h5>
+          <p class="card-text">Sistema otimizado e rápido. Gerenciamento ágil de seus aluguéis em tempo real.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Call to Action -->
+  <div class="alert alert-primary mt-5">
+    <h4>🎯 Comece Agora</h4>
+    <p class="mb-0">
+      {% if not user.is_authenticated %} Faça login com suas credenciais de acesso para acessar o sistema completo.
+      <br />
+      <a href="/login/" class="btn btn-primary mt-2"> ➜ Ir para Login </a>
+      {% else %} Você já está autenticado. Acesse seu dashboard para gerenciar suas informações.
+      <br />
+      <a href="/dashboard/" class="btn btn-primary mt-2"> ➜ Ir para Dashboard </a>
+      {% endif %}
+    </p>
+  </div>
+</div>
+{% endblock %}

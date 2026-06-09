@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Aluguel de Veículos{% endblock %}
+
+{% block content %}
+<div class="mt-5">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1>👋 Bem-vindo, {{ user.first_name|default:user.username }}!</h1>
+            <p class="text-muted">Painel de controle do sistema de aluguel de veículos</p>
+        </div>
+        <div class="col-md-4 text-right">
+            <a href="/logout/" class="btn btn-outline-danger">Sair</a>
+        </div>
+    </div>
+
+    <!-- Menu de Seções -->
+    <h2 class="mt-4 mb-3">📋 Gerenciar</h2>
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <a href="{% url 'categoria-list' %}" class="card btn text-left text-decoration-none" style="color: inherit;">
+                <div class="card-body">
+                    <h5 class="card-title">📦 Categorias</h5>
+                    <p class="card-text text-muted">Gerenciar categorias de veículos</p>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <a href="{% url 'veiculo-list' %}" class="card btn text-left text-decoration-none" style="color: inherit;">
+                <div class="card-body">
+                    <h5 class="card-title">🚗 Veículos</h5>
+                    <p class="card-text text-muted">Gerenciar veículos da frota</p>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <a href="{% url 'cliente-list' %}" class="card btn text-left text-decoration-none" style="color: inherit;">
+                <div class="card-body">
+                    <h5 class="card-title">👥 Clientes</h5>
+                    <p class="card-text text-muted">Gerenciar clientes</p>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <a href="{% url 'funcionario-list' %}" class="card btn text-left text-decoration-none" style="color: inherit;">
+                <div class="card-body">
+                    <h5 class="card-title">👔 Funcionários</h5>
+                    <p class="card-text text-muted">Gerenciar funcionários</p>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <a href="{% url 'aluguel-list' %}" class="card btn text-left text-decoration-none" style="color: inherit;">
+                <div class="card-body">
+                    <h5 class="card-title">📅 Aluguéis</h5>
+                    <p class="card-text text-muted">Gerenciar aluguéis</p>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <a href="{% url 'pagamento-list' %}" class="card btn text-left text-decoration-none" style="color: inherit;">
+                <div class="card-body">
+                    <h5 class="card-title">💰 Pagamentos</h5>
+                    <p class="card-text text-muted">Gerenciar pagamentos</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Cards de Informações -->
+    <hr class="my-5">
+    <h2 class="mb-3">ℹ️ Informações da Conta</h2>
+    
+    <div class="row mt-4">
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">👤 Perfil</h5>
+                    <p class="card-text">
+                        <strong>Usuário:</strong> {{ user.username }}<br>
+                        <strong>E-mail:</strong> {{ user.email|default:"Não informado" }}<br>
+                        <strong>Tipo:</strong> {% if user.is_staff %}Administrador{% else %}Usuário{% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">🔒 Segurança</h5>
+                    <p class="card-text">
+                        Sua sessão está protegida e criptografada.
+                    </p>
+                    <p class="text-muted small">
+                        Data de cadastro: {{ user.date_joined|date:"d/m/Y H:i" }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">⚙️ Admin</h5>
+                    <p class="card-text">
+                        {% if user.is_staff %}
+                            Você tem acesso ao painel administrativo.
+                            <br>
+                            <a href="/admin/" class="btn btn-sm btn-primary mt-2">
+                                Ir para Admin
+                            </a>
+                        {% else %}
+                            Acesso restrito ao painel administrativo.
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+    }
+
+    .btn.card {
+        cursor: pointer;
+    }
+
+    .btn.card:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+</style>
+{% endblock %}

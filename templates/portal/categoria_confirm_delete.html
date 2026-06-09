@@ -1,0 +1,27 @@
+{% extends "portal/base_confirm_delete.html" %}
+
+{% block content %}
+{% with cancel_url='categoria-list' %}
+    <div class="mt-5 mb-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card border-danger">
+                    <div class="card-header bg-danger text-white">
+                        <h3 class="mb-0">⚠️ Deletar Categoria</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>Tem certeza que deseja deletar esta categoria?</p>
+                        <div class="alert alert-warning"><strong>Esta ação não pode ser desfeita!</strong></div>
+                        <p><strong>Nome:</strong> {{ object.nome }}</p>
+                        <form method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-lg">🗑️ Deletar</button>
+                            <a href="{% url 'categoria-list' %}" class="btn btn-secondary btn-lg">❌ Cancelar</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endwith %}
+{% endblock %}

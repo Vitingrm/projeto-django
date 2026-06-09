@@ -1,0 +1,2 @@
+{% extends "base.html" %}
+{% block content %}<div class="mt-4"><h1>Aluguel #{{ aluguel.pk }}</h1><p><strong>Veículo:</strong> {{ aluguel.veiculo.placa }}</p><p><strong>Cliente:</strong> {{ aluguel.cliente.nome }}</p><a href="{% url 'aluguel-update' aluguel.pk %}" class="btn btn-primary">✏️</a></div>{% endblock %}

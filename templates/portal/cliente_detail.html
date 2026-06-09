@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}{{ cliente.nome }}{% endblock %}
+{% block content %}
+<div class="mt-4"><h1>{{ cliente.nome }}</h1><p><strong>CPF:</strong> {{ cliente.cpf }}</p><p><strong>Email:</strong> {{ cliente.email }}</p><a href="{% url 'cliente-update' cliente.pk %}" class="btn btn-primary">✏️ Editar</a>
+</div>
+{% endblock %}

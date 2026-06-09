@@ -12,9 +12,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-# Unfold deve ser adicionado ANTES de django.contrib.admin
+# Grappelli deve ser adicionado ANTES de django.contrib.admin
 INSTALLED_APPS = [
-    'unfold',
+    'grappelli',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -32,6 +32,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'core.middleware.LogoutRedirectMiddleware',  # Redireciona /admin/logout/ para /logout/
 ]
 
 ROOT_URLCONF = 'aluguel_veiculos.urls'
@@ -90,11 +91,16 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ========================================
-# CONFIGURAÇÃO DO UNFOLD - Tema e Estilos
+# CONFIGURAÇÃO DO GRAPPELLI
 # ========================================
-UNFOLD = {
-    "SITE_TITLE": "Aluguel de Veículos",
-    "SITE_HEADER": "Administração",
-    "SITE_URL": "/",
-    "SHOW_VIEW_ON_SITE": True,
-}
+GRAPPELLI_ADMIN_TITLE = "Aluguel de Veículos"
+
+# URL do Grappelli (você precisa adicionar na urls.py)
+# url(r'^grappelli/', include('grappelli.urls')),
+
+# ========================================
+# CONFIGURAÇÃO DE AUTENTICAÇÃO
+# ========================================
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'dashboard'
+LOGOUT_REDIRECT_URL = 'home'
