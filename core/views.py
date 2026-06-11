@@ -4,15 +4,77 @@ from django.contrib.auth import logout
 from django.contrib.auth.views import LoginView
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.decorators.http import require_http_methods
 from django.contrib import messages
 from django.core.paginator import Paginator
+from django.db.models import Q
+from django.db.models.deletion import ProtectedError
 from core.models import Categoria, Veiculo, Cliente, Funcionario, Aluguel, Pagamento
 from core.forms import (
     CategoriaForm, VeiculoForm, ClienteForm, FuncionarioForm, 
     AluguelForm, PagamentoForm
 )
+
+
+class SearchMixin:
+    """Mixin para adicionar busca em ListView"""
+    search_fields = []
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        query = self.request.GET.get('q')
+        if query and self.search_fields:
+            q_objects = Q()
+            for field in self.search_fields:
+                q_objects |= Q(**{f"{field}__icontains": query})
+            queryset = queryset.filter(q_objects)
+        return queryset
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search_query'] = self.request.GET.get('q', '')
+        return context
+
+
+class FormMixin:
+    """Mixin para adicionar cancel_url em CreateView e UpdateView"""
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Mapeia o model para o nome da lista
+        model_name = self.model.__name__.lower()
+        list_url_name = f'{model_name}-list'
+        context['cancel_url'] = reverse_lazy(list_url_name)
+        context['title_form'] = getattr(self, 'title_form', f'{model_name.capitalize()}')
+        return context
+
+
+class DeleteMixin:
+    """Mixin para tratar erros de deleção com foreign keys protegidas"""
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        model_name = self.model.__name__.lower()
+        list_url_name = f'{model_name}-list'
+        context['cancel_url'] = reverse_lazy(list_url_name)
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        """Sobrescreve post para capturar ProtectedError"""
+        try:
+            self.object = self.get_object()
+            self.object.delete()
+            messages.success(self.request, f'{self.model.__name__} deletado com sucesso!')
+            model_name = self.model.__name__.lower()
+            return redirect(reverse(f'{model_name}-list'))
+        except ProtectedError as e:
+            messages.error(
+                self.request,
+                f'Não é possível deletar este {self.model.__name__.lower()} pois ele está vinculado a outros registros. Remova as referências primeiro.'
+            )
+            model_name = self.model.__name__.lower()
+            return redirect(reverse(f'{model_name}-list'))
 
 
 class CustomLoginView(LoginView):
@@ -58,13 +120,14 @@ def admin_logout_redirect(request):
 # CATEGORIAS
 # ========================================
 
-class CategoriaListView(LoginRequiredMixin, ListView):
+class CategoriaListView(LoginRequiredMixin, SearchMixin, ListView):
     """Listar todas as categorias"""
     model = Categoria
     template_name = 'portal/categoria_list.html'
     context_object_name = 'categorias'
     paginate_by = 10
     login_url = 'login'
+    search_fields = ['nome', 'descricao']
 
 
 class CategoriaDetailView(LoginRequiredMixin, DetailView):
@@ -75,19 +138,13 @@ class CategoriaDetailView(LoginRequiredMixin, DetailView):
     login_url = 'login'
 
 
-class CategoriaCreateView(LoginRequiredMixin, CreateView):
+class CategoriaCreateView(LoginRequiredMixin, FormMixin, CreateView):
     """Criar nova categoria"""
     model = Categoria
     form_class = CategoriaForm
     template_name = 'portal/categoria_form.html'
     success_url = reverse_lazy('categoria-list')
     login_url = 'login'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title_form'] = 'Nova Categoria'
-        context['cancel_url'] = reverse_lazy('categoria-list')
-        return context
 
     def form_valid(self, form):
         messages.success(self.request, 'Categoria criada com sucesso!')
@@ -98,7 +155,7 @@ class CategoriaCreateView(LoginRequiredMixin, CreateView):
         return super().form_invalid(form)
 
 
-class CategoriaUpdateView(LoginRequiredMixin, UpdateView):
+class CategoriaUpdateView(LoginRequiredMixin, FormMixin, UpdateView):
     """Editar categoria existente"""
     model = Categoria
     form_class = CategoriaForm
@@ -115,29 +172,26 @@ class CategoriaUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_invalid(form)
 
 
-class CategoriaDeleteView(LoginRequiredMixin, DeleteView):
+class CategoriaDeleteView(LoginRequiredMixin, DeleteMixin, DeleteView):
     """Deletar categoria"""
     model = Categoria
     template_name = 'portal/categoria_confirm_delete.html'
     success_url = reverse_lazy('categoria-list')
     login_url = 'login'
 
-    def delete(self, request, *args, **kwargs):
-        messages.success(self.request, 'Categoria deletada com sucesso!')
-        return super().delete(request, *args, **kwargs)
-
 
 # ========================================
 # VEÍCULOS
 # ========================================
 
-class VeiculoListView(LoginRequiredMixin, ListView):
+class VeiculoListView(LoginRequiredMixin, SearchMixin, ListView):
     """Listar todos os veículos"""
     model = Veiculo
     template_name = 'portal/veiculo_list.html'
     context_object_name = 'veiculos'
     paginate_by = 10
     login_url = 'login'
+    search_fields = ['placa', 'marca', 'modelo']
 
 
 class VeiculoDetailView(LoginRequiredMixin, DetailView):
@@ -148,7 +202,7 @@ class VeiculoDetailView(LoginRequiredMixin, DetailView):
     login_url = 'login'
 
 
-class VeiculoCreateView(LoginRequiredMixin, CreateView):
+class VeiculoCreateView(LoginRequiredMixin, FormMixin, CreateView):
     """Criar novo veículo"""
     model = Veiculo
     form_class = VeiculoForm
@@ -165,7 +219,7 @@ class VeiculoCreateView(LoginRequiredMixin, CreateView):
         return super().form_invalid(form)
 
 
-class VeiculoUpdateView(LoginRequiredMixin, UpdateView):
+class VeiculoUpdateView(LoginRequiredMixin, FormMixin, UpdateView):
     """Editar veículo existente"""
     model = Veiculo
     form_class = VeiculoForm
@@ -182,29 +236,26 @@ class VeiculoUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_invalid(form)
 
 
-class VeiculoDeleteView(LoginRequiredMixin, DeleteView):
+class VeiculoDeleteView(LoginRequiredMixin, DeleteMixin, DeleteView):
     """Deletar veículo"""
     model = Veiculo
     template_name = 'portal/veiculo_confirm_delete.html'
     success_url = reverse_lazy('veiculo-list')
     login_url = 'login'
 
-    def delete(self, request, *args, **kwargs):
-        messages.success(self.request, 'Veículo deletado com sucesso!')
-        return super().delete(request, *args, **kwargs)
-
 
 # ========================================
 # CLIENTES
 # ========================================
 
-class ClienteListView(LoginRequiredMixin, ListView):
+class ClienteListView(LoginRequiredMixin, SearchMixin, ListView):
     """Listar todos os clientes"""
     model = Cliente
     template_name = 'portal/cliente_list.html'
     context_object_name = 'clientes'
     paginate_by = 10
     login_url = 'login'
+    search_fields = ['nome', 'cpf', 'email']
 
 
 class ClienteDetailView(LoginRequiredMixin, DetailView):
@@ -215,7 +266,7 @@ class ClienteDetailView(LoginRequiredMixin, DetailView):
     login_url = 'login'
 
 
-class ClienteCreateView(LoginRequiredMixin, CreateView):
+class ClienteCreateView(LoginRequiredMixin, FormMixin, CreateView):
     """Criar novo cliente"""
     model = Cliente
     form_class = ClienteForm
@@ -232,7 +283,7 @@ class ClienteCreateView(LoginRequiredMixin, CreateView):
         return super().form_invalid(form)
 
 
-class ClienteUpdateView(LoginRequiredMixin, UpdateView):
+class ClienteUpdateView(LoginRequiredMixin, FormMixin, UpdateView):
     """Editar cliente existente"""
     model = Cliente
     form_class = ClienteForm
@@ -249,29 +300,26 @@ class ClienteUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_invalid(form)
 
 
-class ClienteDeleteView(LoginRequiredMixin, DeleteView):
+class ClienteDeleteView(LoginRequiredMixin, DeleteMixin, DeleteView):
     """Deletar cliente"""
     model = Cliente
     template_name = 'portal/cliente_confirm_delete.html'
     success_url = reverse_lazy('cliente-list')
     login_url = 'login'
 
-    def delete(self, request, *args, **kwargs):
-        messages.success(self.request, 'Cliente deletado com sucesso!')
-        return super().delete(request, *args, **kwargs)
-
 
 # ========================================
 # FUNCIONÁRIOS
 # ========================================
 
-class FuncionarioListView(LoginRequiredMixin, ListView):
+class FuncionarioListView(LoginRequiredMixin, SearchMixin, ListView):
     """Listar todos os funcionários"""
     model = Funcionario
     template_name = 'portal/funcionario_list.html'
     context_object_name = 'funcionarios'
     paginate_by = 10
     login_url = 'login'
+    search_fields = ['nome', 'cargo', 'email']
 
 
 class FuncionarioDetailView(LoginRequiredMixin, DetailView):
@@ -282,7 +330,7 @@ class FuncionarioDetailView(LoginRequiredMixin, DetailView):
     login_url = 'login'
 
 
-class FuncionarioCreateView(LoginRequiredMixin, CreateView):
+class FuncionarioCreateView(LoginRequiredMixin, FormMixin, CreateView):
     """Criar novo funcionário"""
     model = Funcionario
     form_class = FuncionarioForm
@@ -299,7 +347,7 @@ class FuncionarioCreateView(LoginRequiredMixin, CreateView):
         return super().form_invalid(form)
 
 
-class FuncionarioUpdateView(LoginRequiredMixin, UpdateView):
+class FuncionarioUpdateView(LoginRequiredMixin, FormMixin, UpdateView):
     """Editar funcionário existente"""
     model = Funcionario
     form_class = FuncionarioForm
@@ -316,29 +364,26 @@ class FuncionarioUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_invalid(form)
 
 
-class FuncionarioDeleteView(LoginRequiredMixin, DeleteView):
+class FuncionarioDeleteView(LoginRequiredMixin, DeleteMixin, DeleteView):
     """Deletar funcionário"""
     model = Funcionario
     template_name = 'portal/funcionario_confirm_delete.html'
     success_url = reverse_lazy('funcionario-list')
     login_url = 'login'
 
-    def delete(self, request, *args, **kwargs):
-        messages.success(self.request, 'Funcionário deletado com sucesso!')
-        return super().delete(request, *args, **kwargs)
-
 
 # ========================================
 # ALUGUÉIS
 # ========================================
 
-class AluguelListView(LoginRequiredMixin, ListView):
+class AluguelListView(LoginRequiredMixin, SearchMixin, ListView):
     """Listar todos os aluguéis"""
     model = Aluguel
     template_name = 'portal/aluguel_list.html'
     context_object_name = 'alugueis'
     paginate_by = 10
     login_url = 'login'
+    search_fields = ['cliente__nome', 'veiculo__placa', 'status']
 
 
 class AluguelDetailView(LoginRequiredMixin, DetailView):
@@ -349,7 +394,7 @@ class AluguelDetailView(LoginRequiredMixin, DetailView):
     login_url = 'login'
 
 
-class AluguelCreateView(LoginRequiredMixin, CreateView):
+class AluguelCreateView(LoginRequiredMixin, FormMixin, CreateView):
     """Criar novo aluguel"""
     model = Aluguel
     form_class = AluguelForm
@@ -366,7 +411,7 @@ class AluguelCreateView(LoginRequiredMixin, CreateView):
         return super().form_invalid(form)
 
 
-class AluguelUpdateView(LoginRequiredMixin, UpdateView):
+class AluguelUpdateView(LoginRequiredMixin, FormMixin, UpdateView):
     """Editar aluguel existente"""
     model = Aluguel
     form_class = AluguelForm
@@ -383,29 +428,26 @@ class AluguelUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_invalid(form)
 
 
-class AluguelDeleteView(LoginRequiredMixin, DeleteView):
+class AluguelDeleteView(LoginRequiredMixin, DeleteMixin, DeleteView):
     """Deletar aluguel"""
     model = Aluguel
     template_name = 'portal/aluguel_confirm_delete.html'
     success_url = reverse_lazy('aluguel-list')
     login_url = 'login'
 
-    def delete(self, request, *args, **kwargs):
-        messages.success(self.request, 'Aluguel deletado com sucesso!')
-        return super().delete(request, *args, **kwargs)
-
 
 # ========================================
 # PAGAMENTOS
 # ========================================
 
-class PagamentoListView(LoginRequiredMixin, ListView):
+class PagamentoListView(LoginRequiredMixin, SearchMixin, ListView):
     """Listar todos os pagamentos"""
     model = Pagamento
     template_name = 'portal/pagamento_list.html'
     context_object_name = 'pagamentos'
     paginate_by = 10
     login_url = 'login'
+    search_fields = ['aluguel__id', 'status', 'metodo']
 
 
 class PagamentoDetailView(LoginRequiredMixin, DetailView):
@@ -416,7 +458,7 @@ class PagamentoDetailView(LoginRequiredMixin, DetailView):
     login_url = 'login'
 
 
-class PagamentoCreateView(LoginRequiredMixin, CreateView):
+class PagamentoCreateView(LoginRequiredMixin, FormMixin, CreateView):
     """Criar novo pagamento"""
     model = Pagamento
     form_class = PagamentoForm
@@ -433,7 +475,7 @@ class PagamentoCreateView(LoginRequiredMixin, CreateView):
         return super().form_invalid(form)
 
 
-class PagamentoUpdateView(LoginRequiredMixin, UpdateView):
+class PagamentoUpdateView(LoginRequiredMixin, FormMixin, UpdateView):
     """Editar pagamento existente"""
     model = Pagamento
     form_class = PagamentoForm
@@ -450,14 +492,10 @@ class PagamentoUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_invalid(form)
 
 
-class PagamentoDeleteView(LoginRequiredMixin, DeleteView):
+class PagamentoDeleteView(LoginRequiredMixin, DeleteMixin, DeleteView):
     """Deletar pagamento"""
     model = Pagamento
     template_name = 'portal/pagamento_confirm_delete.html'
     success_url = reverse_lazy('pagamento-list')
     login_url = 'login'
-
-    def delete(self, request, *args, **kwargs):
-        messages.success(self.request, 'Pagamento deletado com sucesso!')
-        return super().delete(request, *args, **kwargs)
 

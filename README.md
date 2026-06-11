@@ -50,7 +50,9 @@ Preencha com seus dados:
 python manage.py runserver
 ```
 
-Acesse: **http://127.0.0.1:8000/admin/**
+Acesse: 
+- **Admin**: http://127.0.0.1:8000/admin/
+- **Portal**: http://127.0.0.1:8000/
 
 ---
 
@@ -96,7 +98,9 @@ Preencha com seus dados:
 python manage.py runserver
 ```
 
-Acesse: **http://127.0.0.1:8000/admin/**
+Acesse: 
+- **Admin**: http://127.0.0.1:8000/admin/
+- **Portal**: http://127.0.0.1:8000/
 
 ---
 
@@ -112,13 +116,25 @@ projeto-django/
 │
 ├── core/                       # App principal
 │   ├── models.py              # Modelos com validações clean()
+│   ├── views.py               # Views do portal com busca
+│   ├── forms.py               # Formulários customizados
 │   ├── admin.py               # Admin com filtros customizados
+│   ├── middleware.py          # Middleware customizado
 │   ├── migrations/            # Migrações do banco
 │   └── apps.py                # Configuração app
 │
 ├── templates/
-│   └── admin/
-│       └── extra_head.html    # Customizações admin
+│   ├── base.html              # Template base
+│   ├── dashboard.html         # Dashboard do usuário
+│   ├── login.html             # Página de login
+│   └── portal/                # Templates do portal
+│       ├── categoria_list.html    # Listagem com busca
+│       ├── veiculo_list.html      # Listagem com busca
+│       ├── cliente_list.html      # Listagem com busca
+│       ├── funcionario_list.html  # Listagem com busca
+│       ├── aluguel_list.html      # Listagem com status e busca
+│       ├── pagamento_list.html    # Listagem com valor e busca
+│       └── (arquivos de formulário e detalhe)
 │
 ├── static/
 │   └── admin/css/             # Estilos customizados
@@ -133,16 +149,43 @@ projeto-django/
 
 ## ✨ Recursos Implementados
 
+### 🏠 Portal do Usuário
+
+Sistema completo de gerenciamento com autenticação:
+
+- ✅ **Login/Logout**: Acesso seguro ao portal
+- ✅ **Dashboard**: Página inicial para usuários autenticados
+- ✅ **CRUD Completo**: Criar, ler, atualizar e deletar para todas as entidades
+- ✅ **Interface Responsiva**: Com Bootstrap 5
+
+### 🔍 Busca e Filtro
+
+Todas as listagens possuem barra de busca integrada:
+
+- **Categorias**: Busca por nome e descrição
+- **Veículos**: Busca por placa, marca, modelo
+- **Clientes**: Busca por nome, CPF, email
+- **Funcionários**: Busca por nome, cargo, email
+- **Aluguéis**: Busca por cliente, placa de veículo, status
+- **Pagamentos**: Busca por ID do aluguel, status, método
+
 ### 🔐 Validações com `clean()`
 
 Todos os modelos possuem validações robustas de regras de negócio:
 
-- **Categoria**: Preço da diária > 0
+- **Categoria**: Preço da diária > 0 ✅ CORRIGIDO (preco_diaria adicionado ao formulário)
 - **Veiculo**: Quilometragem, ano válido, status válido, features como lista
 - **Cliente**: CPF formato válido, CNH apenas números, cliente ≥ 18 anos
 - **Funcionario**: CPF formato válido, cargo obrigatório
 - **Aluguel**: Datas válidas, quilometragem válida, regras de encerramento
 - **Pagamento**: Valor > 0, datas válidas, regras de status
+
+### 📋 Listagens Melhoradas
+
+- ✅ **Status Visível**: Aluguéis e pagamentos mostram status com badges coloridas
+- ✅ **Valores Visíveis**: Categoria mostra preço da diária, pagamentos mostram valor total
+- ✅ **Botões de Ação**: Deletar funcionários e pagamentos agora disponíveis
+- ✅ **Paginação**: 10 itens por página em todas as listagens
 
 ### 📋 List Field (JSONField)
 
@@ -171,7 +214,24 @@ No admin de Veículos, existe um filtro dinâmico que:
 
 ---
 
-## 📊 Modelos de Dados
+## 🌐 URLs do Portal
+
+Após fazer login, você tem acesso aos seguintes recursos:
+
+```
+Dashboard:        /dashboard/
+
+Categorias:       /portal/categorias/
+Veículos:         /portal/veiculos/
+Clientes:         /portal/clientes/
+Funcionários:     /portal/funcionarios/
+Aluguéis:         /portal/alugueis/
+Pagamentos:       /portal/pagamentos/
+
+Admin Django:     /admin/
+```
+
+---
 
 ### 🏷️ Categoria
 
